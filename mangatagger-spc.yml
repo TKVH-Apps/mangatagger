@@ -1,0 +1,30 @@
+apiVersion: secrets-store.csi.x-k8s.io/v1alpha1
+kind: SecretProviderClass
+metadata:
+  name: mangatagger
+spec:
+  provider: vault
+  secretObjects:
+  - secretName: mangatagger
+    type: Opaque
+    data: 
+    - objectName: MANGA_TAGGER_DB_NAME
+      key: MANGA_TAGGER_DB_NAME
+    - objectName: MANGA_TAGGER_DB_PASSWORD
+      key: MANGA_TAGGER_DB_PASSWORD
+    - objectName: MANGA_TAGGER_DB_USERNAME
+      key: MANGA_TAGGER_DB_USERNAME
+  parameters:
+    vaultAddress: 'http://vault.vault:8200'
+    vaultKubernetesMountPath: 'k8s-vault-csi'
+    roleName: mangatagger
+    objects: |
+      - objectName: "MANGA_TAGGER_DB_NAME"
+        secretPath: "apps-kv/data/mangatagger/database"
+        secretKey: "MANGA_TAGGER_DB_NAME"
+      - objectName: "MANGA_TAGGER_DB_PASSWORD"
+        secretPath: "apps-kv/data/mangatagger/database"
+        secretKey: "MANGA_TAGGER_DB_PASSWORD"
+      - objectName: "MANGA_TAGGER_DB_USERNAME"
+        secretPath: "apps-kv/data/mangatagger/database"
+        secretKey: "MANGA_TAGGER_DB_USERNAME"

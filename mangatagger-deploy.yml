@@ -1,0 +1,114 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: mangatagger
+  labels:
+    app: mangatagger
+    part-of: mangatagger
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mangatagger
+      part-of: mangatagger
+  template:
+    metadata:
+      labels:
+        app: mangatagger
+        part-of: mangatagger
+    spec:
+      serviceAccountName: mangatagger
+      containers:
+      - name: mangatagger
+        image: banhcanh/manga-tagger:unstable
+        env:
+        - name: PUID
+          value: "1000"
+        - name: PGID
+          value: "1000"
+        - name: TZ
+          value: "Europe/Paris"
+        - name: UMASK
+          value: "022"
+        - name: MANGA_TAGGER_IMAGE_COVER
+          value: "true"
+        - name: MANGA_TAGGER_ADULT_RESULT
+          value: "false"
+        - name: MANGA_TAGGER_DRY_RUN
+          value: "false"
+        - name: MANGA_TAGGER_DB_INSERT
+          value: "false"
+        - name: MANGA_TAGGER_RENAME_FILE
+          value: "false"
+        - name: MANGA_TAGGER_WRITE_COMICINFO
+          value: "false"
+        - name: MANGA_TAGGER_THREADS
+          value: "1"
+        - name: MANGA_TAGGER_MAX_QUEUE_SIZE
+          value: "0"
+        - name: MANGA_TAGGER_DB_NAME
+          valueFrom:
+            secretKeyRef:
+              name: mangatagger
+              key: MANGA_TAGGER_DB_NAME
+        - name: MANGA_TAGGER_DB_HOST_ADDRESS
+          value: "mongo"
+        - name: MANGA_TAGGER_DB_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: mangatagger
+              key: MANGA_TAGGER_DB_USERNAME
+        - name: MANGA_TAGGER_DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mangatagger
+              key: MANGA_TAGGER_DB_PASSWORD
+        - name: MANGA_TAGGER_DB_AUTH_SOURCE
+          value: "admin"
+        - name: MANGA_TAGGER_DB_SELECTION_TIMEOUT
+          value: "10000"
+        - name: MANGA_TAGGER_DB_PORT
+          value: "27017"
+        - name: MANGA_TAGGER_LOGGING_LEVEL
+          value: "info"
+        - name: MANGA_TAGGER_LOGGING_CONSOLE
+          value: "true"
+        - name: MANGA_TAGGER_LOGGING_FILE
+          value: "false"
+        - name: MANGA_TAGGER_LOGGING_JSON
+          value: "false"
+        - name: MANGA_TAGGER_LOGGING_TCP
+          value: "false"
+        - name: MANGA_TAGGER_LOGGING_JSONTCP
+          value: "false"
+        volumeMounts:
+        - name: mangatagger
+          mountPath: /config
+        - name: mangas
+          mountPath: /manga
+        - name: downloads
+          mountPath: /downloads
+        - name: mangatagger-secrets
+          mountPath: "/mnt/vault"
+          readOnly: true
+        resources:
+          limits:
+            memory: 128Mi
+          requests:
+            memory: 64Mi
+      volumes:
+      - name: mangatagger
+        persistentVolumeClaim:
+          claimName: mangatagger
+      - name: mangas
+        persistentVolumeClaim:
+          claimName: mangas
+      - name: downloads
+        persistentVolumeClaim:
+          claimName: downloads
+      - name: mangatagger-secrets
+        csi:
+          driver: "secrets-store.csi.k8s.io"
+          readOnly: true
+          volumeAttributes:
+            secretProviderClass: "mangatagger"
