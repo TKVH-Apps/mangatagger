@@ -45,6 +45,16 @@ spec:
             secretKeyRef:
               name: mangatagger
               key: MANGA_TAGGER_DB_NAME
+        readinessProbe:
+          tcpSocket:
+            port: mongo
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        livenessProbe:
+          tcpSocket:
+            port: mongo
+          initialDelaySeconds: 15
+          periodSeconds: 20
         resources:
           limits:
             memory: 128Mi
