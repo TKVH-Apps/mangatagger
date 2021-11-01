@@ -93,9 +93,9 @@ spec:
           readOnly: true
         resources:
           limits:
-            memory: 64Mi
+            memory: 128Mi
           requests:
-            memory: 32Mi
+            memory: 64Mi
       volumes:
       - name: mangatagger
         persistentVolumeClaim:
