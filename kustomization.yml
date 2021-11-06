@@ -8,3 +8,4 @@ resources:
   - mongo-svc.yml
   - mangatagger-spc.yml
   - mangatagger-sa.yml
+  - mangatagger-ns.yml
