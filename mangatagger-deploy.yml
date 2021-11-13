@@ -18,6 +18,14 @@ spec:
         part-of: mangatagger
     spec:
       serviceAccountName: mangatagger
+      affinity:
+        nodeAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 1
+            preference:
+              matchExpressions:
+              - key: node-role.kubernetes.io/worker
+                operator: Exists
       containers:
       - name: mangatagger
         image: banhcanh/manga-tagger:unstable
