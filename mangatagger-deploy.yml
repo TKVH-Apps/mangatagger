@@ -28,7 +28,7 @@ spec:
                 operator: Exists
       containers:
       - name: mangatagger
-        image: banhcanh/manga-tagger:unstable
+        image: banhcanh/manga-tagger:release-v1.2.3-alpha
         env:
         - name: PUID
           value: "1000"
