@@ -5,11 +5,6 @@ metadata:
   labels:
     app: mongo
     part-of: mangatagger
-  annotations:
-    keel.sh/policy: force
-    keel.sh/trigger: poll
-    keel.sh/pollSchedule: "@hourly"
-    keel.sh/match-tag: true
 spec:
   replicas: 1
   selector:
@@ -25,7 +20,7 @@ spec:
       serviceAccountName: mangatagger
       containers:
       - name: mongo
-        image: mongo:latest
+        image: mongo:5.0.5
         ports:
         - name: mongo
           containerPort: 27017
